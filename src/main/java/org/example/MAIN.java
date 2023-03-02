@@ -15,7 +15,7 @@ public class MAIN {
         create_jpg(noise.get(), noise.get_length(), "noise", true);
     }
     public static void main(String[] args) {
-        NOISE noise = new NOISE(NOISE.COLOR.SINE, 10000);
+        NOISE noise = new NOISE(NOISE.COLOR.BROWN, 10000);
 
         noise.do_autoregression(100);
 
