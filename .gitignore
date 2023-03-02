@@ -4,6 +4,8 @@ next_noise.jpg
 noise.jpg
 
 pom.xml
+*.iml
 
 .idea/
 target/
+out/
