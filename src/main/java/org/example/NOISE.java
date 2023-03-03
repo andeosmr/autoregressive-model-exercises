@@ -126,7 +126,9 @@ public class NOISE {
         for (int i = 0; i < maxlag; i++) {
             phi[i] = 0;
             for (int j = 0; j < maxlag; j++) {
-                phi[i] += inv_corrmatrix.get(i, j)*corrvector[j];
+                //#2
+                //uncomment and fill in the dots
+                //phi[i] += (...).get(i, j)*(...)[j]; //hint: this is a basic matrix multiplication
             }
         }
     }
