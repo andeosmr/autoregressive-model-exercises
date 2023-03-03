@@ -1,24 +1,21 @@
 package org.example;
 
-import static org.example.MATRIX.OP.*;
+import static org.example.FUNCTIONS.checkbetween;
 
 public class MATRIX {
     private final double[][] matrix;
     private final int length;
     private final int width;
 
-    private Boolean checkbetween(double value, double around) {
-        return (value > around + .1 || value < around - .1);
-    }
     private void checkunit() throws MYEXCEPTION {
         for (int i = 0; i < length; i++) {
             for (int j = 0; j < length; j++) {
                 if (i == j) {
-                    if (checkbetween(this.get(i, j), 1.)) {
+                    if (checkbetween(this.get(i, j), 1., .1)) {
                         throw new MYEXCEPTION("inverting matrix went wrong");
                     }
                 } else {
-                    if (checkbetween(this.get(i, j), 0.)) {
+                    if (checkbetween(this.get(i, j), 0., .1)) {
                         throw new MYEXCEPTION("inverting matrix went wrong");
                     }
                 }
@@ -54,32 +51,28 @@ public class MATRIX {
         copy(imatrix);
     }
 
-    public MATRIX inverse() {
+    public MATRIX inverse() throws MYEXCEPTION {
         MATRIX inv = new MATRIX(length, length, 1.);
         MATRIX unit = new MATRIX(this);
 
-        try {
-            if (length != width) {
-                throw new MYEXCEPTION("cannot invert non-square matrix");
-            }
-        } catch(Exception e) {
-            e.printStackTrace();
+        if (length != width) {
+            throw new MYEXCEPTION("cannot invert non-square matrix");
         }
 
         for (int i = 0; i < length; i++) {
             double diag = unit.get(i, i);
 
             for (int j = 0; j < length; j++) {
-                inv.set(DIV, i, j, diag);
-                unit.set(DIV, i, j, diag);
+                inv.div(i, j, diag);
+                unit.div(i, j, diag);
             }
 
             for (int j = 0; j < length; j++) {
                 if (j != i) {
                     double elim = unit.get(j, i);
                     for (int l = 0; l < length; l++) {
-                        inv.set(ADD, j, l, -inv.get(i, l)*elim);
-                        unit.set(ADD, j, l, -unit.get(i, l)*elim);
+                        inv.add(j, l, -inv.get(i, l)*elim);
+                        unit.add(j, l, -unit.get(i, l)*elim);
                     }
                 }
             }
@@ -96,21 +89,18 @@ public class MATRIX {
     double get(int row, int col) {
         return matrix[row][col];
     }
-    void set(OP op, int row, int col, double value) {
-        switch (op) {
-            case SUB:
-                matrix[row][col] = value;
-                break;
-            case ADD:
-                matrix[row][col] += value;
-                break;
-            case MULT:
-                matrix[row][col] *= value;
-                break;
-            case DIV:
-                if (value != 0.) {matrix[row][col] /= value;}
-                break;
-        }
+    void set(int row, int col, double value) {
+        matrix[row][col] = value;
+    }
+    void add(int row, int col, double value) {
+        matrix[row][col] += value;
+    }
+    void mult(int row, int col, double value) {
+        matrix[row][col] *= value;
+    }
+    void div(int row, int col, double value) throws MYEXCEPTION {
+        if (value != 0.) {matrix[row][col] /= value;}
+        else {throw new MYEXCEPTION("cannot divide by zero");}
     }
     void copy(MATRIX copymatrix) {
         for (int i = 0; i < length; i++) {
@@ -118,12 +108,5 @@ public class MATRIX {
                 matrix[i][j] = copymatrix.get(i, j);
             }
         }
-    }
-
-    enum OP {
-        SUB,
-        ADD,
-        MULT,
-        DIV
     }
 }

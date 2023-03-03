@@ -33,8 +33,8 @@ public class NOISE {
             double cov = covariance(i);
 
             for (int j = 0; j < maxlag - i; j++) {
-                covmatrix.set(MATRIX.OP.SUB, j, j + i, cov);
-                covmatrix.set(MATRIX.OP.SUB, j + i, j, cov);
+                covmatrix.set(j, j + i, cov);
+                covmatrix.set(j + i, j, cov);
             }
         }
     }
@@ -105,7 +105,7 @@ public class NOISE {
         variance = covariance(0);
     }
 
-    public void do_autoregression(int imaxlag) {
+    public void do_autoregression(int imaxlag) throws MYEXCEPTION {
         maxlag = imaxlag;
         covmatrix = new MATRIX(maxlag, maxlag, 1.);
         covvector = new double[maxlag];
