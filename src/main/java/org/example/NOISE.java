@@ -6,10 +6,10 @@ public class NOISE {
     private MATRIX covmatrix;
     private double[] covvector;
     private int maxlag;
-    private double[] ar;
+    private double[] phi;
     private final double variance;
 
-    private double covariance(int lag) {
+    private double autocorrelation(int lag) {
         if (lag == length) {
             return 0.;
         }
@@ -20,7 +20,9 @@ public class NOISE {
 
         double g = 0;
         for (int t = lag; t < length; t++) {
-            g += noise[t]*noise[t - lag]/(length - lag);
+            //#1
+            //uncomment and fill in the dots
+            //g += noise[...]*noise[...]/(length - lag); //look at slide ... for inspiration
         }
         if (lag != 0) {
             g /= variance;
@@ -30,11 +32,12 @@ public class NOISE {
     }
     private void do_covmatrix() {
         for (int i = 1; i < maxlag; i++) {
-            double cov = covariance(i);
+            double cov = autocorrelation(i);
 
             for (int j = 0; j < maxlag - i; j++) {
-                covmatrix.set(j, j + i, cov);
-                covmatrix.set(j + i, j, cov);
+                //#1
+                //covmatrix.set(..., ..., cov); //uncomment and fill in the dots
+                //covmatrix.set(..., ..., cov); //look at slide ... for inspiration
             }
         }
     }
@@ -42,7 +45,7 @@ public class NOISE {
         for (int i = 0; i < maxlag - 1; i++) {
             covvector[i] = covmatrix.get(0, i + 1);
         }
-        covvector[maxlag - 1] = covariance(maxlag);
+        covvector[maxlag - 1] = autocorrelation(maxlag);
     }
     private void do_whitenoise() {
         for (int t = 0; t < length; t++) {
@@ -67,8 +70,8 @@ public class NOISE {
         }
     }
 
-    NOISE(COLOR color, int ilength) {
-        length = ilength;
+    NOISE(COLOR color, int i_length) {
+        length = i_length;
         noise = new double[length];
 
         if (color == COLOR.WHITE) {
@@ -84,12 +87,16 @@ public class NOISE {
             do_sinenoise();
         }
 
-        variance = covariance(0);
+        variance = autocorrelation(0);
     }
-    NOISE (double[] iar, int ilength) {
-        length = ilength;
+    NOISE (double[] i_ar, int i_length) {
+        length = i_length;
         noise = new double[length];
-        maxlag = iar.length;
+        maxlag = i_ar.length;
+
+        for (int i = 0; i < maxlag; i++) {
+            phi[i] = i_ar[i];
+        }
 
         for (int t = 0; t < length; t++) {
             noise[t] = 0.;
@@ -97,12 +104,14 @@ public class NOISE {
         for (int t = 1; t < length; t++) {
             int max = Math.min(maxlag, t);
             for (int i = 0; i < max; i++) {
-                noise[t] += iar[i]*noise[t - i - 1];
+                //#3
+                //uncomment and fill in the dots
+                //noise[...] += ar[...]*noise[...]; //look at slide ... for inspiration
             }
-            noise[t] += 2.*Math.random() - 1.;
+            //noise[...] += 2.*Math.random() - 1.;
         }
 
-        variance = covariance(0);
+        variance = autocorrelation(0);
     }
 
     public void do_autoregression(int imaxlag) throws MYEXCEPTION {
@@ -116,28 +125,30 @@ public class NOISE {
         do_covvector(covmatrix);
         covvector = get_covvector();
 
-        MATRIX invcovmatrix = covmatrix.inverse();
+        MATRIX inv_covmatrix = covmatrix.give_inverse(); //inverse of covariance matrix
 
-        ar = new double[maxlag];
+        phi = new double[maxlag]; //the coefficients of the Yule-Walker equations
         for (int i = 0; i < maxlag; i++) {
-            ar[i] = 0;
+            phi[i] = 0;
             for (int j = 0; j < maxlag; j++) {
-                ar[i] += invcovmatrix.get(i, j)*covvector[j];
+                //#2
+                //uncomment and fill in the dots
+                //ar[i] += (...).get(i, j)*(...)[j]; //hint: this is a basic matrix multiplication
             }
         }
     }
 
     public double[] get_covvector() {return covvector;}
     public MATRIX get_covmatrix() {return covmatrix;}
-    public double[] get_ar() {return ar;}
+    public double[] get_phi() {return phi;}
     public int get_length() {return length;}
     public int get_maxlag() {return maxlag;}
 
-    double[] get() {
+    public double[] get() {
         return noise;
     }
 
-    enum COLOR {
+    public enum COLOR {
         WHITE,
         BROWN,
         VIOLET,

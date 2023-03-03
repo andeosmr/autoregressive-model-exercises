@@ -51,7 +51,7 @@ public class MATRIX {
         copy(imatrix);
     }
 
-    public MATRIX inverse() throws MYEXCEPTION {
+    public MATRIX give_inverse() throws MYEXCEPTION {
         MATRIX inv = new MATRIX(length, length, 1.);
         MATRIX unit = new MATRIX(this);
 
@@ -86,23 +86,23 @@ public class MATRIX {
         return inv;
     }
 
-    double get(int row, int col) {
+    public double get(int row, int col) {
         return matrix[row][col];
     }
     void set(int row, int col, double value) {
         matrix[row][col] = value;
     }
-    void add(int row, int col, double value) {
+    public void add(int row, int col, double value) {
         matrix[row][col] += value;
     }
-    void mult(int row, int col, double value) {
+    public void mult(int row, int col, double value) {
         matrix[row][col] *= value;
     }
-    void div(int row, int col, double value) throws MYEXCEPTION {
+    public void div(int row, int col, double value) throws MYEXCEPTION {
         if (value != 0.) {matrix[row][col] /= value;}
         else {throw new MYEXCEPTION("cannot divide by zero");}
     }
-    void copy(MATRIX copymatrix) {
+    public void copy(MATRIX copymatrix) {
         for (int i = 0; i < length; i++) {
             for (int j = 0; j < width; j++) {
                 matrix[i][j] = copymatrix.get(i, j);

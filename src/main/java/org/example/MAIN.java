@@ -8,7 +8,7 @@ public class MAIN {
         arimage.create(name);
     }
     private static void drawimages(NOISE noise) {
-        create_jpg(noise.get_ar(), noise.get_maxlag(), "ar", false);
+        create_jpg(noise.get_phi(), noise.get_maxlag(), "ar", false);
 
         create_jpg(noise.get_covvector(), noise.get_maxlag(), "covvector", true);
 
@@ -21,7 +21,7 @@ public class MAIN {
 
         drawimages(noise);
 
-        NOISE next_noise = new NOISE(noise.get_ar(), 10000);
+        NOISE next_noise = new NOISE(noise.get_phi(), 10000);
 
         create_jpg(next_noise.get(), next_noise.get_length(), "next_noise", true);
     }
