@@ -3,8 +3,8 @@ package org.example;
 public class NOISE {
     private final int length;
     private final double[] noise;
-    private MATRIX covmatrix;
-    private double[] covvector;
+    private MATRIX corrmatrix;
+    private double[] corrvector;
     private int maxlag;
     private double[] phi;
     private final double variance;
@@ -24,15 +24,12 @@ public class NOISE {
             //uncomment and fill in the dots
             //g += noise[...]*noise[...]/(length - lag); //look at slide ... for inspiration
         }
-        if (lag != 0) {
-            g /= variance;
-        }
 
         return g;
     }
-    private void do_covmatrix() {
+    private void do_corrmatrix() {
         for (int i = 1; i < maxlag; i++) {
-            double cov = autocorrelation(i);
+            double cov = autocorrelation(i)/variance;
 
             for (int j = 0; j < maxlag - i; j++) {
                 //#1
@@ -41,11 +38,11 @@ public class NOISE {
             }
         }
     }
-    private void do_covvector(MATRIX covmatrix) {
+    private void do_corrvector() {
         for (int i = 0; i < maxlag - 1; i++) {
-            covvector[i] = covmatrix.get(0, i + 1);
+            corrvector[i] = corrmatrix.get(0, i + 1);
         }
-        covvector[maxlag - 1] = autocorrelation(maxlag);
+        corrvector[maxlag - 1] = autocorrelation(maxlag)/variance;
     }
     private void do_whitenoise() {
         for (int t = 0; t < length; t++) {
@@ -89,13 +86,13 @@ public class NOISE {
 
         variance = autocorrelation(0);
     }
-    NOISE (double[] i_ar, int i_length) {
+    NOISE (double[] i_phi, int i_length) {
         length = i_length;
         noise = new double[length];
-        maxlag = i_ar.length;
+        maxlag = i_phi.length;
 
         for (int i = 0; i < maxlag; i++) {
-            phi[i] = i_ar[i];
+            phi[i] = i_phi[i];
         }
 
         for (int t = 0; t < length; t++) {
@@ -106,7 +103,7 @@ public class NOISE {
             for (int i = 0; i < max; i++) {
                 //#3
                 //uncomment and fill in the dots
-                //noise[...] += ar[...]*noise[...]; //look at slide ... for inspiration
+                //noise[...] += phi[...]*noise[...]; //look at slide ... for inspiration
             }
             //noise[...] += 2.*Math.random() - 1.;
         }
@@ -116,16 +113,16 @@ public class NOISE {
 
     public void do_autoregression(int imaxlag) throws MYEXCEPTION {
         maxlag = imaxlag;
-        covmatrix = new MATRIX(maxlag, maxlag, 1.);
-        covvector = new double[maxlag];
+        corrmatrix = new MATRIX(maxlag, maxlag, 1.);
+        corrvector = new double[maxlag];
 
-        do_covmatrix();
-        covmatrix = get_covmatrix();
+        do_corrmatrix();
+        corrmatrix = get_corrmatrix();
 
-        do_covvector(covmatrix);
-        covvector = get_covvector();
+        do_corrvector();
+        corrvector = get_corrvector();
 
-        MATRIX inv_covmatrix = covmatrix.give_inverse(); //inverse of covariance matrix
+        MATRIX inv_corrmatrix = corrmatrix.give_inverse(); //inverse of correlation matrix
 
         phi = new double[maxlag]; //the coefficients of the Yule-Walker equations
         for (int i = 0; i < maxlag; i++) {
@@ -133,13 +130,13 @@ public class NOISE {
             for (int j = 0; j < maxlag; j++) {
                 //#2
                 //uncomment and fill in the dots
-                //ar[i] += (...).get(i, j)*(...)[j]; //hint: this is a basic matrix multiplication
+                //phi[i] += (...).get(i, j)*(...)[j]; //hint: this is a basic matrix multiplication
             }
         }
     }
 
-    public double[] get_covvector() {return covvector;}
-    public MATRIX get_covmatrix() {return covmatrix;}
+    public double[] get_corrvector() {return corrvector;}
+    public MATRIX get_corrmatrix() {return corrmatrix;}
     public double[] get_phi() {return phi;}
     public int get_length() {return length;}
     public int get_maxlag() {return maxlag;}
