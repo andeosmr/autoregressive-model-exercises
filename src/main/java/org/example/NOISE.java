@@ -20,9 +20,7 @@ public class NOISE {
 
         double g = 0;
         for (int t = lag; t < length; t++) {
-            //#1
-            //uncomment and fill in the dots
-            //g += noise[...]*noise[...]/(length - lag); //look at slide ... for inspiration
+            g += noise[t]*noise[t - lag]/(length - lag);
         }
 
         return g;
@@ -32,9 +30,8 @@ public class NOISE {
             double cov = autocorrelation(i)/variance;
 
             for (int j = 0; j < maxlag - i; j++) {
-                //#1
-                //covmatrix.set(..., ..., cov); //uncomment and fill in the dots
-                //covmatrix.set(..., ..., cov); //look at slide ... for inspiration
+                corrmatrix.set(j, i + j, cov);
+                corrmatrix.set(i + j, j, cov);
             }
         }
     }
@@ -91,6 +88,7 @@ public class NOISE {
         noise = new double[length];
         maxlag = i_phi.length;
 
+        phi = new double[maxlag];
         for (int i = 0; i < maxlag; i++) {
             phi[i] = i_phi[i];
         }
