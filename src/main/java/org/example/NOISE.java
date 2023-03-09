@@ -114,7 +114,7 @@ public class NOISE {
         covmatrix = get_covmatrix();
 
         do_covvector(covmatrix);
-        covvector = get_covvector();
+        covvector = get_corrvector();
 
         MATRIX invcovmatrix = covmatrix.inverse();
 
@@ -127,7 +127,7 @@ public class NOISE {
         }
     }
 
-    public double[] get_covvector() {return covvector;}
+    public double[] get_corrvector() {return covvector;}
     public MATRIX get_covmatrix() {return covmatrix;}
     public double[] get_ar() {return ar;}
     public int get_length() {return length;}
