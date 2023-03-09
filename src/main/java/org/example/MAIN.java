@@ -8,7 +8,7 @@ public class MAIN {
         arimage.create(name);
     }
     private static void drawimages(NOISE noise) {
-        create_jpg(noise.get_phi(), noise.get_maxlag(), "ar", false);
+        create_jpg(noise.get_phi(), noise.get_maxlag(), "phi", false);
 
         create_jpg(noise.get_corrvector(), noise.get_maxlag(), "corrvector", false);
 
