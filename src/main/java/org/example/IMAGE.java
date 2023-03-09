@@ -67,7 +67,7 @@ public class IMAGE {
 
         g.setColor(color);
         for (int i = 0; i < length; i++) {
-            g.fillRect(i*horizontal/length, vertical/2 - (int)((vertical/1.1)/2.*data[i]),  5 , 5);
+            g.fillRect(i*horizontal/length, vertical/2 - (int)((vertical/1.1)/2.*data[i]),  10, 10);
         }
     }
 
