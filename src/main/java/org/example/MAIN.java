@@ -10,12 +10,12 @@ public class MAIN {
     private static void drawimages(NOISE noise) {
         create_jpg(noise.get_phi(), noise.get_maxlag(), "ar", false);
 
-        create_jpg(noise.get_corrvector(), noise.get_maxlag(), "corrvector", true);
+        create_jpg(noise.get_corrvector(), noise.get_maxlag(), "corrvector", false);
 
         create_jpg(noise.get(), noise.get_length(), "noise", true);
     }
     public static void main(String[] args) throws MYEXCEPTION {
-        NOISE noise = new NOISE(NOISE.COLOR.BROWN, 10000);
+        NOISE noise = new NOISE(NOISE.COLOR.VIOLET, 10000);
 
         noise.do_autoregression(100);
 
