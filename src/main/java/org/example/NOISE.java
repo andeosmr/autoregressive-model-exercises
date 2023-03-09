@@ -103,7 +103,7 @@ public class NOISE {
             for (int i = 0; i < max; i++) {
                 //#3
                 //uncomment and fill in the dots
-                //noise[...] += phi[...]*noise[...]; //look at slide ... for inspiration
+                //noise[...] += phi[...]*noise[...]; //look at slide 6 for inspiration
             }
             //noise[...] += 2.*Math.random() - 1.;
         }
@@ -131,6 +131,7 @@ public class NOISE {
                 //#2
                 //uncomment and fill in the dots
                 //phi[i] += (...).get(i, j)*(...)[j]; //hint: this is a basic matrix multiplication
+                //look at slides 7 & 8 for inspiration
             }
         }
     }
