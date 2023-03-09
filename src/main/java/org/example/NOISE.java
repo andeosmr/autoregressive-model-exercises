@@ -3,13 +3,13 @@ package org.example;
 public class NOISE {
     private final int length;
     private final double[] noise;
-    private MATRIX covmatrix;
-    private double[] covvector;
+    private MATRIX corrmatrix;
+    private double[] corrvector;
     private int maxlag;
-    private double[] ar;
+    private double[] phi;
     private final double variance;
 
-    private double covariance(int lag) {
+    private double correlation(int lag) {
         if (lag == length) {
             return 0.;
         }
@@ -28,21 +28,21 @@ public class NOISE {
 
         return g;
     }
-    private void do_covmatrix() {
+    private void do_corrmatrix() {
         for (int i = 1; i < maxlag; i++) {
-            double cov = covariance(i);
+            double cov = correlation(i);
 
             for (int j = 0; j < maxlag - i; j++) {
-                covmatrix.set(j, j + i, cov);
-                covmatrix.set(j + i, j, cov);
+                corrmatrix.set(j, j + i, cov);
+                corrmatrix.set(j + i, j, cov);
             }
         }
     }
-    private void do_covvector(MATRIX covmatrix) {
+    private void do_corrvector(MATRIX corrmatrix) {
         for (int i = 0; i < maxlag - 1; i++) {
-            covvector[i] = covmatrix.get(0, i + 1);
+            corrvector[i] = corrmatrix.get(0, i + 1);
         }
-        covvector[maxlag - 1] = covariance(maxlag);
+        corrvector[maxlag - 1] = correlation(maxlag);
     }
     private void do_whitenoise() {
         for (int t = 0; t < length; t++) {
@@ -84,7 +84,7 @@ public class NOISE {
             do_sinenoise();
         }
 
-        variance = covariance(0);
+        variance = correlation(0);
     }
     NOISE (double[] iar, int ilength) {
         length = ilength;
@@ -102,34 +102,34 @@ public class NOISE {
             noise[t] += 2.*Math.random() - 1.;
         }
 
-        variance = covariance(0);
+        variance = correlation(0);
     }
 
     public void do_autoregression(int imaxlag) throws MYEXCEPTION {
         maxlag = imaxlag;
-        covmatrix = new MATRIX(maxlag, maxlag, 1.);
-        covvector = new double[maxlag];
+        corrmatrix = new MATRIX(maxlag, maxlag, 1.);
+        corrvector = new double[maxlag];
 
-        do_covmatrix();
-        covmatrix = get_covmatrix();
+        do_corrmatrix();
+        corrmatrix = get_corrmatrix();
 
-        do_covvector(covmatrix);
-        covvector = get_corrvector();
+        do_corrvector(corrmatrix);
+        corrvector = get_corrvector();
 
-        MATRIX invcovmatrix = covmatrix.inverse();
+        MATRIX invcorrmatrix = corrmatrix.inverse();
 
-        ar = new double[maxlag];
+        phi = new double[maxlag];
         for (int i = 0; i < maxlag; i++) {
-            ar[i] = 0;
+            phi[i] = 0;
             for (int j = 0; j < maxlag; j++) {
-                ar[i] += invcovmatrix.get(i, j)*covvector[j];
+                phi[i] += invcorrmatrix.get(i, j)*corrvector[j];
             }
         }
     }
 
-    public double[] get_corrvector() {return covvector;}
-    public MATRIX get_covmatrix() {return covmatrix;}
-    public double[] get_ar() {return ar;}
+    public double[] get_corrvector() {return corrvector;}
+    public MATRIX get_corrmatrix() {return corrmatrix;}
+    public double[] get_phi() {return phi;}
     public int get_length() {return length;}
     public int get_maxlag() {return maxlag;}
 
