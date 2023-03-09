@@ -10,7 +10,7 @@ public class MAIN {
     private static void drawimages(NOISE noise) {
         create_jpg(noise.get_ar(), noise.get_maxlag(), "ar", false);
 
-        create_jpg(noise.get_covvector(), noise.get_maxlag(), "covvector", true);
+        create_jpg(noise.get_corrvector(), noise.get_maxlag(), "corrvector", true);
 
         create_jpg(noise.get(), noise.get_length(), "noise", true);
     }
