@@ -91,6 +91,7 @@ public class NOISE {
         noise = new double[length];
         maxlag = i_phi.length;
 
+        phi = new double[maxlag];
         for (int i = 0; i < maxlag; i++) {
             phi[i] = i_phi[i];
         }
